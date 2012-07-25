@@ -2,12 +2,29 @@
 
 use strict;
 use warnings;
+use DBI;
+use DBD::mysql;
+use Time::Local;
+
+my $dbh;
+my $prog = "slsp_parser";
 
 binmode(STDOUT, ":utf8");
 
 print "Starting...\n";
 
-open(FILE, "< vypis.txt");
+sub db_reconnect {
+	print "(re)connecting DB\n";
+	$dbh->disconnect if $dbh;
+	my $dsn = "DBI:mysql:slsp:localhost";
+	$dbh = DBI->connect($dsn,'slsp','slsp')
+			or die "$prog FAIL: Unable to connect: $dbh->errstr";
+	$dbh->ping or die "$prog FAIL: Unable to verify open database: $dbh->errstr";
+}
+
+db_reconnect();
+
+my @files = <data/*>;
 
 #datove pole obsahuje:
 #
@@ -33,14 +50,26 @@ open(FILE, "< vypis.txt");
 # 19,20,21 - ?
 # 22 - poznamka od odosielatela (ked ja som odosielatelom - takze moja)
 
-foreach my $line (<FILE>) {
-	chomp($line);
-	my @d = split(/;/,$line);
-	print 	"         Datum: $d[0]\n".
-		"          Suma: $d[7] $d[8]\n".
-		"            Od: $d[4]/$d[5] $d[6]\n".
-		"           Typ: $d[11]\n".
-		"          Info: $d[12] $d[16] $d[18] $d[22]\n\n";
+
+foreach my $file (@files) {
+	open(FILE, "< $file");
+	foreach my $line (<FILE>) {
+		chomp($line);
+		my @d = split(/;/,$line);
+		#parse date string to unix timestamp
+		my @t = $d[0] =~ m!(\d{2})\.(\d{2})\.(\d{4})!;
+		$t[1]--;
+		print $t[0]."\n";
+		my $timestamp = timelocal 0,0,12,@t[0,1,2];
+		print 	"         Datum: $d[0] ($timestamp)\n".
+			"          Suma: $d[7] $d[8]\n".
+			"            Od: $d[4]/$d[5] $d[6]\n".
+			"           Typ: $d[11]\n".
+			"          Info: $d[12] $d[16] $d[18] $d[22]\n\n";
+		my $sth = $dbh->prepare("INSERT INTO `transactions` (`date`,`amount`, `info`) VALUES (?,?,?)")
+			or print "$prog FAIL: mysql prepare failed: $dbh->errstr\n";
+		$sth->execute($timestamp,$d[7],$d[4]."/".$d[5]." ".$d[6]." ".$d[12]." ".$d[16]." ".$d[18]." ".$d[22]) or print "$prog FAIL: mysql exec failed: $dbh->errstr\n";
+	}
 }
 
 print "Done\n";
