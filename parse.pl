@@ -68,7 +68,7 @@ foreach my $file (@files) {
 			"          Info: $d[12] $d[16] $d[18] $d[22]\n\n";
 		my $sth = $dbh->prepare("INSERT INTO `transactions` (`date`,`amount`, `info`) VALUES (?,?,?)")
 			or print "$prog FAIL: mysql prepare failed: $dbh->errstr\n";
-		$sth->execute($timestamp,$d[7],$d[4]."/".$d[5]." ".$d[6]." ".$d[12]." ".$d[16]." ".$d[18]." ".$d[22]) or print "$prog FAIL: mysql exec failed: $dbh->errstr\n";
+		$sth->execute($timestamp,$d[7],$d[4]."/".$d[5]." ".$d[6]." ".$d[12]." ".$d[11]." ".$d[16]." ".$d[18]." ".$d[22]) or print "$prog FAIL: mysql exec failed: $dbh->errstr\n";
 	}
 }
 

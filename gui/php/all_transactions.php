@@ -1,3 +1,34 @@
+<html>
+<head>
+<style>
+body {
+	margin: 0px;
+	margin-left: 10px;
+	margin-top: 20px;
+	margin-bottom: 30px;
+}
+table, tr, td {
+	border: 1px solid;
+	border-collapse:collapse;
+	font-family: Verdana, sans-serif;
+	font-size: 10pt;
+}
+.red {
+	background: #FFAD99;
+}
+
+.green {
+	background: #94FF94;
+}
+.vyber_kartou {
+	background: #DF013A;
+}
+.platba_kartou {
+	background: #FF0000;
+}
+</style>
+</head>
+<body>
 <?php
 include("db.php");
 
@@ -10,16 +41,18 @@ $raw = mysql_query("SELECT * FROM `transactions`
 
 $out = 0;
 $in = 0;
-echo '<table border=1>';
+echo '<table border=1>'."\n";
 while ($d = mysql_fetch_array($raw,MYSQL_ASSOC)) {
-	if ($d['amount']>=0) {
-		$in = $in+$d['amount'];
+	if (preg_match("/V.ber kartou/", $d['info'])) {
+		$class = 'vyber_kartou';
+	} elseif (preg_match("/Platba kartou/", $d['info'])) {
+		$class = 'platba_kartou';
+	} elseif ($d['amount']>=0) {
+                $class = "green";
+        } else {
+		$class = "";
 	}
-	if ($d['amount']<=0) {
-		$out = $out+abs($d['amount']);
-	}
-	echo '<tr><td>'.date("d. M y",$d['date']).'</td><td>'.$d['amount'].'</td><td>'.$d['info'].'</td></tr>';
+	echo '<tr class='.$class.'><td>'.date("d. M y",$d['date']).'</td><td>'.$d['amount'].'</td><td>'.$d['info'].'</td></tr>'."\n";
 }
 echo '</table>';
-echo "Total in: $in<br>Total out: $out";
 ?>
