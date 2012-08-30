@@ -13,7 +13,7 @@ CREATE TABLE IF NOT EXISTS `transactions` (
   `transaction_id` int(11) NOT NULL AUTO_INCREMENT,
   `date` bigint(16) NOT NULL,
   `amount` float NOT NULL,
-  `info` varchar(128) COLLATE utf8_unicode_ci NOT NULL,
+  `info` varchar(256) COLLATE utf8_unicode_ci NOT NULL,
   PRIMARY KEY (`transaction_id`),
   UNIQUE KEY `date` (`date`,`info`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
