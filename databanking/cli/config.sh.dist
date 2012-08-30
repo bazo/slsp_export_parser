@@ -1,0 +1,5 @@
+#!/bin/bash
+
+ID='931223452341'
+PASS='234f1234rUIG'
+DEFAULT_ACCOUNT='https://ib.slsp.sk/ebanking/accinfo/ibxaccinfo.xml?uid=XXXXXXXX&utyp=0&ucis=XXXXXXXXXXX&uprcis=000000'
