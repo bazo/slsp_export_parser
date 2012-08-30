@@ -1,6 +1,10 @@
+Vytvorte uzivatela a databazu 'slsp' v MySQL
+
 CREATE USER 'slsp'@'localhost' IDENTIFIED BY  'slsp';
 
 GRANT USAGE ON * . * TO  'slsp'@'localhost' IDENTIFIED BY  '***' WITH MAX_QUERIES_PER_HOUR 0 MAX_CONNECTIONS_PER_HOUR 0 MAX_UPDATES_PER_HOUR 0 MAX_USER_CONNECTIONS 0 ;
 
 GRANT ALL PRIVILEGES ON  `slsp` . * TO  'slsp'@'localhost' WITH GRANT OPTION ;
 
+Nakopirujte exportovane data z internet bankingu do adresara 'data' a spustite prikaz parse.pl
+Data sa naimportuju do SQL tabulky. Prezerat ich mozete cez web gui.

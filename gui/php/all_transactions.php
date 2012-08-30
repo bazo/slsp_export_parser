@@ -24,7 +24,7 @@ table, tr, td {
 	background: #DF013A;
 }
 .platba_kartou {
-	background: #FF0000;
+	background: #AA0000;
 }
 </style>
 </head>
